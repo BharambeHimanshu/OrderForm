@@ -89,6 +89,7 @@ export default function OrderForm() {
 
     return(
         <>
+        <div className="form">
         <div className={`form ${submitted ? "submitted" : ""}`}>
       <div className="form_contain">
         ORDER FORM
@@ -129,6 +130,7 @@ export default function OrderForm() {
         required
         disabled
       />
+        </div>
       <div>
         <label>unique value </label>
         <input
@@ -184,7 +186,6 @@ export default function OrderForm() {
           className="dark-theme"
         />
       </div>
-    </div>
     <div>
         <label>Expected Target Date:</label>
         <input
@@ -299,6 +300,7 @@ export default function OrderForm() {
         <option value="XP">XP</option>
         <option value="Others">Others</option>
       </select>
+      </div>
       <div>
         <label>SHPL instructions</label>
         <input type="text" name="SHPL_instructions" value={shplInstructions} onChange={handleShplInstructionsChange} required />
@@ -313,8 +315,6 @@ export default function OrderForm() {
           <option value="5">5</option>
         </select>
       </div>
-    </div>
-    <div>
       <div>
         <label htmlFor="noCctt">Number of CC numbers:</label>
         <select name="noCctt" id="noCctt" value={noCctt} onChange={handleNoCcttChange}>
@@ -356,15 +356,14 @@ export default function OrderForm() {
           <input type="text" name="cc5" id="cc5" value={ccNumbers.cc5} onChange={handleCcNumberChange} required />
         </div>
       )}
-      </div>
       <div>
-      <form onSubmit={handleSubmit}>
+      <div onSubmit={handleSubmit}>
         <div className="submit_button">
           <button type="submit" disabled={!myForm.valid}>
             Submit
           </button>
         </div>
-      </form>
+      </div>
       {submitted && (
         <div>
           <div className="Tq_msg" style={{ position: "relative" }}>
@@ -391,6 +390,7 @@ export default function OrderForm() {
       )}
     </div>
         </form>
+        </div>
         </div>
         </>
     )
