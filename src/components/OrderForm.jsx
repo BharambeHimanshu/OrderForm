@@ -1,25 +1,13 @@
 import React from "react";
 import { useState } from "react";
+import { onOriginChange , submitForm } from "./OrderFormFunction";
 
 export default function OrderForm() {
+  const [inputs, setInputs] = useState({});
   const [selectedOrigin, setSelectedOrigin] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [uniqueValue, setUniqueValue] = useState("");
+  const [selectedlocation, setSelectedlocation] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [vehicleType, setVehicleType] = useState("20 FT ODC");
-  const [transportationService, setTransportationService] = useState("FTL");
-  const [pickupDate, setPickupDate] = useState("");
-  const [expectedDate, setExpectedDate] = useState("");
-  const [orderBy, setOrderBy] = useState("Adinath Tajne");
-  const [soNumber, setSoNumber] = useState("");
-  const [wbs, setWbs] = useState("");
-  const [consigneeName, setConsigneeName] = useState("");
-  const [consigneeAddress, setConsigneeAddress] = useState("");
-  const [consigneePincode, setConsigneePincode] = useState("");
-  const [pmName, setPmName] = useState("");
-  const [pmNumber, setPmNumber] = useState("");
-  const [material, setMaterial] = useState('Cathlar');
-  const [shplInstructions, setShplInstructions] = useState('');
+  const [uniqueValue, setUniqueValue] = useState("");
   const [noCc, setNoCc] = useState('1');
   const [noCctt, setNoCctt] = useState(0);
   const [ccNumbers, setCcNumbers] = useState({
@@ -29,75 +17,53 @@ export default function OrderForm() {
     cc4: "",
     cc5: "",
   });
-  const [myForm, setMyForm] = useState({});
 
 
-  const onOriginChange = () => {
-    // your code for onOriginChange function
+  const handleChanges = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setInputs(values => ({ ...values, [name]: value }));
   };
 
-  const submitForm = (values) => {
-    // your code for submitForm function
-  }; 
-  const handleLocationChange = (event) => {
-    setSelectedLocation(event.target.value);
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    submitForm(inputs)
   };
+  console.log(inputs);
 
-  const handleUniqueValueChange = (event) => {
-    setUniqueValue(event.target.value);
+
+  const handleNoCcChange = (e) => {
+    setNoCc(e.target.value);
   };
+  console.log(noCc);
 
-  const handleVehicleTypeChange = (event) => {
-    setVehicleType(event.target.value);
+  const handleNoCcttChange = (e) => {
+    setNoCctt(parseInt(e.target.value));
   };
+  console.log(noCctt);
 
-  const handleTransportationServiceChange = (event) => {
-    setTransportationService(event.target.value);
-  };
-
-  const handlePickupDateChange = (event) => {
-    setPickupDate(event.target.value);
-  };
-
-  const handleMaterialChange = (event) => {
-    setMaterial(event.target.value);
-  };
-
-  const handleShplInstructionsChange = (event) => {
-    setShplInstructions(event.target.value);
-  };
-
-  const handleNoCcChange = (event) => {
-    setNoCc(event.target.value);
-  };
-
-  const handleNoCcttChange = (event) => {
-    setNoCctt(parseInt(event.target.value));
-  };
-
-  const handleCcNumberChange = (event) => {
+  const handleCcNumberChange = (e) => {
     setCcNumbers({
       ...ccNumbers,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setSubmitted(true);
-  };
-
-    return(
-        <>
-        <div className="form">
-        <div className={`form ${submitted ? "submitted" : ""}`}>
-      <div className="form_contain">
-        ORDER FORM
-      </div>
-      <form onSubmit={(e) => {e.preventDefault(); submitForm({selectedOrigin, selectedLocation, uniqueValue});}}>
+  
+  return(
+  <>
+  <div class="form">
+  <div class="form_contain">
+    ORDER FORM
+  </div>
+      <form onSubmit={handleSubmit}>
         <div>
           <label>Origin:</label>
-          <select value={selectedOrigin} onChange={(e) => {setSelectedOrigin(e.target.value); onOriginChange();}}>
+          <select name="Origin" onChange={(e)=> {
+            const data = onOriginChange(e.target.value)
+            setSelectedlocation(data[1])
+            setUniqueValue(data[4])
+            setSelectedOrigin(e.target.value)
+          }}>
             <option value="">Select an option</option>
             <option value="SHPL- KOLKATA AIRPORT- SIEMENS HEALTHCARE PVT.LTD.">SHPL- KOLKATA AIRPORT- SIEMENS HEALTHCARE PVT.LTD.</option>
             <option value="SHPL- CHENNAI SEAPORT- SIEMENS HEALTHCARE PVT.LTD.">SHPL- CHENNAI SEAPORT- SIEMENS HEALTHCARE PVT.LTD.</option>
@@ -118,15 +84,26 @@ export default function OrderForm() {
             <option value="SHPL - MUMBAI AIRPORT - SIEMENS HEALTHCARE PVT LTD">SHPL - MUMBAI AIRPORT - SIEMENS HEALTHCARE PVT LTD</option>
             <option value="SHPL - PRESS METAL COMPANY - SIEMENS HEALTHCARE PVT. LTD.">SHPL - PRESS METAL COMPANY - SIEMENS HEALTHCARE PVT. LTD.</option>
             <option value="SHPL - RAJLAXMI LOGISTICS PARK- SIEMENS HEALTHCARE PVT LTD">SHPL - RAJLAXMI LOGISTICS PARK- SIEMENS HEALTHCARE PVT LTD</option>
+            <option value="Others">Others</option>
         </select>
         </div>
+        {selectedOrigin === "Others" && (
+          <div>  
+      <label>other location</label>
+      <input
+        type="text"
+        name="Location"
+        onChange={handleChanges}
+        required
+      />
+      </div>
+        )}
         <div>
       <label>Location :</label>
       <input
         type="text"
         name="Location"
-        value={selectedLocation}
-        onChange={handleLocationChange}
+        value={selectedlocation}
         required
         disabled
       />
@@ -138,7 +115,6 @@ export default function OrderForm() {
           type="text"
           name="unique"
           value={uniqueValue}
-          onChange={handleUniqueValueChange}
           required
         />
       </div>
@@ -146,8 +122,7 @@ export default function OrderForm() {
         <label>Vehicle Type:</label>
         <select
           name="VehicleType"
-          value={vehicleType}
-          onChange={handleVehicleTypeChange}
+          onChange={handleChanges}
           required
         >
           <option value="20 FT ODC">20 FT ODC</option>
@@ -165,8 +140,7 @@ export default function OrderForm() {
         <label>Transportation Service:</label>
         <select
           name="TransportationService"
-          value={transportationService}
-          onChange={handleTransportationServiceChange}
+          onChange={handleChanges}
           required
         >
           <option value="FTL">FTL</option>
@@ -180,8 +154,7 @@ export default function OrderForm() {
           style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center" }}
           type="datetime-local"
           name="Pickup_Date"
-          value={pickupDate}
-          onChange={handlePickupDateChange}
+          onChange={handleChanges}
           required
           className="dark-theme"
         />
@@ -192,8 +165,7 @@ export default function OrderForm() {
           style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center" }}
           type="datetime-local"
           name="expected_Date"
-          value={expectedDate}
-          onChange={(e) => setExpectedDate(e.target.value)}
+          onChange={handleChanges}
           required
           className="dark-theme"
         />
@@ -202,8 +174,7 @@ export default function OrderForm() {
         <label>Order By</label>
         <select
           name="OrderBy"
-          value={orderBy}
-          onChange={(e) => setOrderBy(e.target.value)}
+          onChange={handleChanges}
           required
         >
           <option value="Adinath Tajne">Adinath Tajne</option>
@@ -222,8 +193,7 @@ export default function OrderForm() {
         <input
           type="type"
           name="SOnumber"
-          value={soNumber}
-          onChange={(e) => setSoNumber(e.target.value)}
+          onChange={handleChanges}
           required
         />
       </div>
@@ -232,8 +202,7 @@ export default function OrderForm() {
         <input
           type="type"
           name="WBS"
-          value={wbs}
-          onChange={(e) => setWbs(e.target.value)}
+          onChange={handleChanges}
         />
       </div>
       <div>
@@ -241,8 +210,7 @@ export default function OrderForm() {
         <input
           type="text"
           name="ConsigneeName"
-          value={consigneeName}
-          onChange={(e) => setConsigneeName(e.target.value)}
+          onChange={handleChanges}
           required
         />
       </div>
@@ -251,8 +219,7 @@ export default function OrderForm() {
         <input
           type="text"
           name="ConsigneeAddress"
-          value={consigneeAddress}
-          onChange={(e) => setConsigneeAddress(e.target.value)}
+          onChange={handleChanges}
           required
         />
       </div>
@@ -261,8 +228,7 @@ export default function OrderForm() {
       <input 
         type="text" 
         name="ConsigneePincode"
-        value={consigneePincode}
-        onChange={(e) => setConsigneePincode(e.target.value)}
+        onChange={handleChanges}
         required
         />
     </div>
@@ -271,8 +237,7 @@ export default function OrderForm() {
       <input 
         type="text" 
         name="PMName"
-        value={pmName}
-        onChange={(e) => setPmName(e.target.value)}
+        onChange={handleChanges}
         required
         />
     </div>
@@ -281,14 +246,13 @@ export default function OrderForm() {
       <input 
         type="text" 
         name="PMNumber"
-        value={pmNumber}
-        onChange={(e) => setPmNumber(e.target.value)}
+        onChange={handleChanges}
         required
         />
     </div>
     <div>
       <label>Material</label>
-      <select name="Material" value={material} onChange={handleMaterialChange} required>
+      <select name="Material" onChange={handleChanges} required>
         <option value="Cathlar">Cathlar</option>
         <option value="CT">CT</option>
         <option value="LBO">LBO</option>
@@ -301,13 +265,13 @@ export default function OrderForm() {
         <option value="Others">Others</option>
       </select>
       </div>
-      <div>
+            <div>
         <label>SHPL instructions</label>
-        <input type="text" name="SHPL_instructions" value={shplInstructions} onChange={handleShplInstructionsChange} required />
+        <input type="text" name="SHPL_instructions" onChange={handleChanges} required />
       </div>
       <div>
         <label>Number of CC</label>
-        <select name="no_cc" value={noCc} onChange={handleNoCcChange} required>
+        <select name="no_cc" onChange={handleNoCcChange} required>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -317,7 +281,7 @@ export default function OrderForm() {
       </div>
       <div>
         <label htmlFor="noCctt">Number of CC numbers:</label>
-        <select name="noCctt" id="noCctt" value={noCctt} onChange={handleNoCcttChange}>
+        <select name="noCctt" id="noCctt" onChange={handleNoCcttChange}>
           <option value="0">-- Select --</option>
           <option value="1">1</option>
           <option value="2">2</option>
@@ -329,37 +293,37 @@ export default function OrderForm() {
       {noCctt >= 1 && (
         <div>
           <label htmlFor="cc1">CC no.1</label>
-          <input type="text" name="cc1" id="cc1" value={ccNumbers.cc1} onChange={handleCcNumberChange} required />
+          <input type="text" name="cc1" id="cc1" onChange={handleCcNumberChange} required />
         </div>
       )}
       {noCctt >= 2 && (
         <div>
           <label htmlFor="cc2">CC no.2</label>
-          <input type="text" name="cc2" id="cc2" value={ccNumbers.cc2} onChange={handleCcNumberChange} required />
+          <input type="text" name="cc2" id="cc2" onChange={handleCcNumberChange} required />
         </div>
       )}
       {noCctt >= 3 && (
         <div>
           <label htmlFor="cc3">CC no.3</label>
-          <input type="text" name="cc3" id="cc3" value={ccNumbers.cc3} onChange={handleCcNumberChange} required />
+          <input type="text" name="cc3" id="cc3" onChange={handleCcNumberChange} required />
         </div>
       )}
       {noCctt >= 4 && (
         <div>
           <label htmlFor="cc4">CC no.4</label>
-          <input type="text" name="cc4" id="cc4" value={ccNumbers.cc4} onChange={handleCcNumberChange} required />
+          <input type="text" name="cc4" id="cc4" onChange={handleCcNumberChange} required />
         </div>
       )}
       {noCctt === 5 && (
         <div>
           <label htmlFor="cc5">CC no.5</label>
-          <input type="text" name="cc5" id="cc5" value={ccNumbers.cc5} onChange={handleCcNumberChange} required />
+          <input type="text" name="cc5" id="cc5" onChange={handleCcNumberChange} required />
         </div>
       )}
       <div>
-      <div onSubmit={handleSubmit}>
+      <div>
         <div className="submit_button">
-          <button type="submit" disabled={!myForm.valid}>
+          <button type="submit" onChange={setSubmitted}>
             Submit
           </button>
         </div>
@@ -390,7 +354,6 @@ export default function OrderForm() {
       )}
     </div>
         </form>
-        </div>
         </div>
         </>
     )
